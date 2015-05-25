@@ -1,0 +1,45 @@
+Hadoop TDG3
+
+$ hive -f script.q
+
+#)12.1 Hive外壳环境
+$ hive
+hive> show tables;
+hive -f script.q
+hive -e 'select * from dummy'
+
+echo 'X' > /tmp/dummy.txt
+hive -e "CREATE TABLE dummy (value STRING); \
+	LOAD DATA LOCAL INPATH '/tmp/dummy.txt' \
+	OVERWRITE INTO TABLE dummy"
+hive -S -e 'select * from dummy'
+
+#)12.2 示例
+:max_temp.hive
+$ hive -f hive/max_temp.q
+
+#)12.3 运行Hive
+:set.hive 配置Hive
+hive> set hive.enforce.bucketing=true;
+hive> set hive.enforce.bucketing;
+hive> set;
+hive> set -v;
+
+:Hive服务
+hive --service help
+hive --service cli --help
+
+:Hive Web Interface(HWI)
+export ANT_LIB=$ANT_HOME/lib
+hive --service hwi
+http://ys0:9999/hwi
+
+:metastore
+Java Data Objects(JDO)
+
+#)12.5 HiveQL
+:types.hive 数据类型
+:操作与函数
+hive> show functions;
+hive> describe function max;
+:conversions.hive 类型转换
