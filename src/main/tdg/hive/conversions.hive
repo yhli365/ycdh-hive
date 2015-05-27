@@ -11,7 +11,7 @@ SELECT 2 + CAST(TRUE AS INT) FROM dummy;
 
 SELECT 2 + '2' FROM dummy;
 
-SELECT concat('Truth: ', TRUE) FROM simple;
+SELECT concat('Truth: ', TRUE) FROM dummy;
 
 DROP TABLE IF EXISTS simple;
 CREATE TABLE simple (

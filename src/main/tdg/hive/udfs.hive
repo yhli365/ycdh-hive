@@ -27,7 +27,7 @@ CREATE TABLE dummy (value STRING);
 LOAD DATA LOCAL INPATH 'input/hive/dummy.txt'
 OVERWRITE INTO TABLE dummy;
 
-ADD JAR hive-examples.jar;
+ADD JAR ycdh-hive-1.0.jar;
 CREATE TEMPORARY FUNCTION strip AS 'com.hadoopbook.hive.Strip';
 
 ! echo; # vv select_strip;
@@ -50,3 +50,9 @@ OVERWRITE INTO TABLE records;
 CREATE TEMPORARY FUNCTION maximum AS 'com.hadoopbook.hive.Maximum';
 SELECT maximum(temperature) FROM records;
 ! echo; # ^^ select_maximum;
+
+! echo; # vv select_mean;
+SELECT avg(temperature) FROM records;
+CREATE TEMPORARY FUNCTION mean AS 'com.hadoopbook.hive.Mean';
+SELECT mean(temperature) FROM records;
+! echo; # ^^ select_mean;

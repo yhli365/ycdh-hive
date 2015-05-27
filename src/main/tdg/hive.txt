@@ -43,3 +43,75 @@ Java Data Objects(JDO)
 hive> show functions;
 hive> describe function max;
 :conversions.hive 类型转换
+
+#)12.6 表
+:多数据库/模式支持
+hive> CREATE DATABASE dbname;
+hive> USE dbname;
+hive> DROP DATABASE dbname;
+
+:托管表
+$ hdfs dfs -mkdir -p input/hive
+$ hdfs dfs -put input/hive/dummy.txt input/hive/dummy.txt
+hive>
+create table managed_table (dummy STRING);
+load data inpath 'input/hive/dummy.txt' INTO table managed_table;
+select * from managed_table;
+drop table managed_table;
+dfs -ls input/hive/dummy.txt
+dfs -ls /user/hive/warehouse/managed_table
+
+:外部表
+$ hdfs dfs -mkdir -p input/hive
+$ hdfs dfs -put input/hive/dummy.txt input/hive/dummy.txt
+hive> 
+create external table external_table (dummy STRING) location '/output/hive/external_table';
+load data inpath 'input/hive/dummy.txt' INTO table external_table;
+select * from external_table;
+drop table external_table;
+dfs -ls input/hive/dummy.txt
+dfs -ls /output/hive/external_table
+
+:partitions.hive #分区
+:buckets.hive #桶
+
+:storage.hive 存储格式
+:regex_serde.hive 存储格式示例：RegexSerDe
+:multitable_insert.hive #导入数据,多表插入
+
+#)12.7 查询数据
+:sort.hive 排序和聚集
+:mapreduce.txt MapReduce脚本
+:joins.hive 连接
+:子查询
+SELECT station, year, AVG(max_temperature)
+FROM (
+ SELECT station, year, MAX(temperature) AS max_temperature
+ FROM records2
+ WHERE temperature != 9999
+   AND (quality = 0 OR quality = 1 OR quality = 4 OR quality = 5 OR quality = 9)
+ GROUP BY station, year
+) mt
+GROUP BY station, year;
+:视图
+CREATE VIEW valid_records
+AS
+SELECT *
+FROM records2
+WHERE temperature != 9999
+  AND (quality = 0 OR quality = 1 OR quality = 4 OR quality = 5 OR quality = 9);
+SHOW TABLES;
+DESCRIBE EXTENDED valid_records;
+CREATE VIEW max_temperatures (station, year, max_temperature)
+AS
+SELECT station, year, MAX(temperature) FROM valid_records
+GROUP BY station, year;
+SELECT station, year, AVG(max_temperature)
+FROM max_temperatures
+GROUP BY station, year;
+SELECT station, AVG(max_temperature)
+FROM max_temperatures
+GROUP BY station;
+
+#)12.8 用户定义函数
+:udfs.hive UDTF,UDF,UDAF
